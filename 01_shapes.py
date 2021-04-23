@@ -31,11 +31,10 @@ sd.set_screen_size(1200, 600)
 # функция рисования линий с передачей данных о количестве углов, величине каждого угла, угле направления первого
 # вектора, начальной точке и длине вектора
 def drawing(iterations, every_angle, angle, start_point, length):
-    into_start_point = start_point
     for _ in range(iterations):
-        line = sd.get_vector(start_point=into_start_point, angle=angle, length=length, width=1)
+        line = sd.get_vector(start_point=start_point, angle=angle, length=length, width=1)
         line.draw()
-        into_start_point = line.end_point
+        start_point = line.end_point
         angle += every_angle
         sd.sleep(0.1)
 
