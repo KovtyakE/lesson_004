@@ -4,14 +4,29 @@ import simple_draw as sd
 sd.set_screen_size(1500, 850)
 
 first_point = sd.get_point(150, 150)
+red = sd.COLOR_RED
+orange = sd.COLOR_ORANGE
+yellow = sd.COLOR_YELLOW
+green = sd.COLOR_GREEN
+cyan = sd.COLOR_CYAN
+blue = sd.COLOR_BLUE
+purple = sd.COLOR_PURPLE
 
+color_dict = {
+    1: red,
+    2: orange,
+    3: yellow,
+    4: green,
+    5: cyan,
+    6: blue,
+    7: purple
+}
 
 # Добавить цвет в функции рисования геом. фигур. из упр lesson_004/01_shapes.py
 # (код функций скопировать сюда и изменить)
 # Запросить у пользователя цвет фигуры посредством выбора из существующих:
-#   вывести список всех цветов с номерами и ждать ввода номера желаемого цвета.
+# вывести список всех цветов с номерами и ждать ввода номера желаемого цвета.
 # Потом нарисовать все фигуры этим цветом
-
 # Пригодятся функции
 # sd.get_point()
 # sd.line()
@@ -20,52 +35,36 @@ first_point = sd.get_point(150, 150)
 # Результат решения см lesson_004/results/exercise_02_global_color.jpg
 
 
-def drawing(iterations, angle, start_point, length):
+def drawing(iterations, angle, start_point, length, color):
     into_start_point = start_point
-    for _ in range(iterations-1):
+    for _ in range(iterations - 1):
         every_angle = int(360 / iterations)
         vector = sd.get_vector(start_point=into_start_point, angle=angle, length=length, width=1)
-        vector.draw()
+        vector.draw(color=color)
         into_start_point = vector.end_point
         angle += every_angle
         sd.sleep(0.1)
-    sd.line(start_point=into_start_point, end_point=start_point, color=sd.COLOR_YELLOW, width=1)
+    sd.line(start_point=into_start_point, end_point=start_point, color=color, width=1)
 
 
 def all_figures(start_point, angle, length):
+    asked_color = 0
+    while asked_color == 0:
+        try:
+            ask_from_user = int(input("Выберите цвет фигур: \n1-Красный\n2-Оранжевый\n3-Желтый\n4-Зеленый\n"
+                                      "5-Голубой\n6-Синий\n7-Фиолетовый:\n"))
+        except:
+            print("Вы ввели неверное значение, введите число от 1 до 7")
+        else:
+            if ask_from_user in range(1, 7):
+                asked_color = color_dict[ask_from_user]
+            else:
+                print("Вы ввели неверное значение, введите число от 1 до 7")
     distance = 150
     for iterations in range(3, 11):
-        drawing(iterations=iterations, angle=angle, start_point=start_point, length=length)
+        drawing(iterations=iterations, angle=angle, start_point=start_point, length=length, color=asked_color)
         distance += 80
         start_point = sd.get_point(distance, 150)
-
-
-# def triangle(start_point, angle, length):
-#     drawing(iterations=3, angle=angle, start_point=start_point, length=length)
-#
-#
-# def square(start_point, angle, length):
-#     drawing(iterations=4, angle=angle, start_point=start_point, length=length)
-#
-#
-# def pentagon(start_point, angle, length):
-#     drawing(iterations=5, angle=angle, start_point=start_point, length=length)
-#
-#
-# def hexagon(start_point, angle, length):
-#     drawing(iterations=6, angle=angle, start_point=start_point, length=length)
-#
-#
-# def heptagon(start_point, angle, length):
-#     drawing(iterations=7, angle=angle, start_point=start_point, length=length)
-#
-#
-# def octagon(start_point, angle, length):
-#     drawing(iterations=8, angle=angle, start_point=start_point, length=length)
-#
-#
-# def decagon(start_point, angle, length):
-#     drawing(iterations=10, angle=angle, start_point=start_point, length=length)
 
 
 all_figures(start_point=first_point, angle=0, length=20)
