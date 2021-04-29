@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-from pprint import pprint
 from random import randint
-
 import simple_draw as sd
 
 # На основе кода из практической части реализовать снегопад:
@@ -18,41 +16,46 @@ N = 20
 # sd.random_number()
 # sd.user_want_exit()
 sd.set_screen_size(650, 450)
-
+# создание списка из N точек координат х с интервалом в 30 пикселей
 coordinate_x = {(n + 1) * 30 for n in range(N)}
-print(coordinate_x)
+# создание словаря координат с параметрами факторов формы снежинок, объявление переменных для внесения изменений
+# в словарь в будущем, таких как изменение координаты у в меньшую сторону, значение самой координаты у, значение
+# смещения координаты х, непосредственные значения координаты х
 snow_form = {}
 for x in coordinate_x:
     factor_a = randint(4, 8) / 10
     factor_b = randint(25, 45) / 100
     factor_c = randint(50, 70)
-    change_y = 0
-    y = 400
-    z = 0
-    coord_x = x
+    change_y = 0 # насколько уменьшается у при каждой итерации, будет изменено
+    y = randint(450, 600) # значение у по умолчанию, будет изменено
+    z = 0 # отклонение координаты по х, будет изменено
+    coord_x = x # начальные координаты х, равные значению из списка. В цикле изменяется на величину z
     snow_form[x] = factor_a, factor_b, factor_c, change_y, y, z, coord_x
 
 
 def snowfall(size):
     y = 600
     while y >= 40:
+        # организация выхода из бесконечного цикла
         if sd.user_want_exit():
             break
         for x in snow_form:
+            # цикл для создания рандомных переменных для каждого х (в каждой итерации разные)
             factor_a = snow_form[x][0]
             factor_b = snow_form[x][1]
             factor_c = snow_form[x][2]
-            change_y = snow_form[x][3]
-            y = snow_form[x][4] - randint(1, 3)
-            z = randint(-3, 3)
-            coord_x = snow_form[x][6] + z
+            change_y = randint(1, 2) # значение ускорения падения у, меняется в цикле для разных значений
+            y = snow_form[x][4]
+            z = randint(-2, 2) # значение отклонения х для имитации ветра. меняется в цикле для разных значений
+            coord_x = snow_form[x][6] + z # изменение координаты х на величину z
             snow_form[x] = factor_a, factor_b, factor_c, change_y, y, z, coord_x
         for x in snow_form:
+            # цикл отрисовывания всех N снежинок по координатам из словаря с учетом смещений
             factor_a = snow_form[x][0]
             factor_b = snow_form[x][1]
             factor_c = snow_form[x][2]
             change_y = snow_form[x][3]
-            y = snow_form[x][4] - snow_form[x][3]
+            y = snow_form[x][4] - change_y
             z = snow_form[x][5]
             coord_x = snow_form[x][6]
             start_point = sd.get_point(coord_x, y)
@@ -60,15 +63,21 @@ def snowfall(size):
                          factor_c=factor_c)
             # sd.sleep(0.005)
             if y < 40:
-                y = 600
+                # когда снежинка упала, перезаписать высоту отрисовки и форму снежинки, новая снежинка
+                y = randint(450, 600)
+                factor_a = randint(4, 8) / 10
+                factor_b = randint(25, 45) / 100
+                factor_c = randint(50, 70)
                 snow_form[x] = factor_a, factor_b, factor_c, change_y, y, z, coord_x
         if y >= 40:
             for x in snow_form:
+                # пока снежинка не упала, повторять отрисовку снежинки цветом фона, чтобы её стирать с предыдущей
+                # позиции
                 factor_a = snow_form[x][0]
                 factor_b = snow_form[x][1]
                 factor_c = snow_form[x][2]
                 change_y = snow_form[x][3]
-                y = snow_form[x][4] - snow_form[x][3]
+                y = snow_form[x][4] - change_y
                 z = snow_form[x][5]
                 coord_x = snow_form[x][6]
                 start_point = sd.get_point(coord_x, y)
@@ -77,7 +86,7 @@ def snowfall(size):
                 snow_form[x] = factor_a, factor_b, factor_c, change_y, y, z, coord_x
 
 
-snowfall(randint(20, 40))
+snowfall(randint(20, 30))
 
 # while True:
 #     sd.clear_screen()
